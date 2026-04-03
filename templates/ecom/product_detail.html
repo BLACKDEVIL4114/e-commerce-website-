@@ -1,0 +1,376 @@
+{% extends 'ecom/homebase.html' %}
+{% load static %}
+{% block content %}
+<style>
+    body {
+        background-color: #F4F4F9;
+    }
+    .product-detail-container {
+        padding: 30px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    /* Left Column: Image */
+    .product-image-container {
+        position: sticky;
+        top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+    
+    @media (max-width: 991px) {
+        .product-image-container {
+            position: static;
+            margin-bottom: 20px;
+        }
+    }
+
+    .product-image-frame {
+        width: 100%;
+        max-width: 560px;
+        min-height: 480px;
+        border: 1px solid #e2e8ed;
+        border-radius: 12px;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .product-image {
+        width: 100%;
+        max-width: 520px;
+        max-height: 560px;
+        object-fit: contain;
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+    
+    /* Center Column: Info */
+    .product-title {
+        font-size: 24px;
+        line-height: 32px;
+        font-weight: 500;
+        color: #2F4550;
+        margin-bottom: 10px;
+    }
+    .product-price-center {
+        font-size: 28px;
+        color: #2F4550;
+        font-weight: 400;
+    }
+    .product-spec-grid {
+        display: grid;
+        grid-template-columns: minmax(180px, 220px) 1fr;
+        column-gap: 14px;
+        row-gap: 8px;
+        margin-bottom: 20px;
+        align-items: start;
+    }
+    .product-spec-label {
+        font-size: 15px;
+        color: #2f4550;
+        font-weight: 500;
+        line-height: 1.35;
+    }
+    .product-spec-value {
+        font-size: 15px;
+        color: #1f2d35;
+        line-height: 1.35;
+        word-break: break-word;
+    }
+    .product-description-list {
+        margin: 0 0 20px 0;
+        padding-left: 20px;
+    }
+    .product-description-list li {
+        margin-bottom: 6px;
+        font-size: 14px;
+        color: #333;
+        line-height: 1.4;
+    }
+    @media (max-width: 768px) {
+        .product-image-frame {
+            min-height: 340px;
+            max-width: 100%;
+        }
+        .product-image {
+            max-height: 360px;
+        }
+        .product-spec-grid {
+            grid-template-columns: 1fr;
+            row-gap: 4px;
+        }
+        .product-spec-label {
+            font-weight: 600;
+            margin-top: 6px;
+        }
+    }
+    .about-section {
+        margin-top: 20px;
+    }
+    .about-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #2F4550;
+        margin-bottom: 8px;
+    }
+    .about-list {
+        margin: 0;
+        padding-left: 20px;
+    }
+    .about-list li {
+        margin-bottom: 4px;
+        font-size: 14px;
+        color: #333;
+    }
+
+    /* Right Column: Buy Box */
+    .buy-box {
+        border: 1px solid #d5d9d9;
+        border-radius: 8px;
+        padding: 14px 18px;
+        background-color: #fff;
+    }
+    .buy-box-price {
+        font-size: 28px;
+        color: #2F4550;
+        font-weight: 500;
+        line-height: 1;
+        margin-bottom: 10px;
+    }
+    .in-stock {
+        font-size: 18px;
+        color: #007600;
+        margin-bottom: 15px;
+    }
+    .btn-add-cart {
+        background-color: #586F7C;
+        border-color: #586F7C;
+        border-radius: 20px;
+        color: #fff;
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,.2);
+        border-style: solid;
+        border-width: 1px;
+        cursor: pointer;
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: bold;
+    }
+    .btn-add-cart:hover {
+        background-color: #4a5e69;
+        border-color: #4a5e69;
+        text-decoration: none;
+        color: #fff;
+    }
+    .btn-buy-now {
+        background-color: #2F4550;
+        border-color: #2F4550;
+        border-radius: 20px;
+        color: #fff;
+        width: 100%;
+        padding: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,.2);
+        border-style: solid;
+        border-width: 1px;
+        cursor: pointer;
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: bold;
+    }
+     .btn-buy-now:hover {
+        background-color: #1e2d35;
+        border-color: #1e2d35;
+        text-decoration: none;
+        color: #fff;
+    }
+
+</style>
+
+<div class="container-fluid product-detail-container" style="max-width: 1500px;">
+    <div class="row">
+        <!-- Left Column: Image -->
+        <div class="col-md-4 product-image-container">
+            <div class="product-image-frame">
+                {% if product.product_image %}
+                <img src="{{ product.product_image.url }}" alt="{{ product.name }}" class="product-image">
+                {% else %}
+                <img src="{% static 'images/placeholder.png' %}" alt="No Image" class="product-image">
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Center Column: Info -->
+        <div class="col-md-5">
+            <h1 class="product-title">{{ product.name }}</h1>
+            <div class="product-price-center">₹ {{ product.price }}</div>
+            
+            <hr>
+            
+            {% if product_specs %}
+            <div class="product-spec-grid">
+                {% for label, value in product_specs %}
+                <div class="product-spec-label">{{ label }}</div>
+                <div class="product-spec-value">{{ value }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if description_points %}
+            <ul class="product-description-list">
+                {% for point in description_points %}
+                <li>{{ point }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            {% if product.about %}
+            <div class="about-section">
+                <h3 class="about-title">About this item</h3>
+                <ul class="about-list">
+                    {% for item in product.about_list %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Column: Buy Box -->
+        <div class="col-md-3">
+            <div class="buy-box">
+                <div class="buy-box-price">₹ {{ product.price }}</div>
+                {% if product.stock > 5 %}
+                  <div class="in-stock" style="color:#007600;">In Stock</div>
+                {% elif product.stock > 0 %}
+                  <div class="in-stock" style="color:#B12704;">Only {{ product.stock }} left in stock - order soon.</div>
+                {% else %}
+                  <div class="in-stock" style="color:#B12704;">Temporarily Out of Stock</div>
+                {% endif %}
+                <div style="font-size: 14px; margin-bottom: 10px;">Sold by <b>EcoHenil</b></div>
+                
+                {% if product.stock > 0 %}
+                <a href="{% url 'add-to-cart' product.id %}" class="btn-add-cart">Add to Cart</a>
+                <a href="{% url 'buy-now' product.id %}" class="btn-buy-now">Buy Now</a>
+                {% else %}
+                <button class="btn-add-cart" disabled style="background-color:#ccc; border-color:#ccc; cursor:not-allowed;">Out of Stock</button>
+                <button class="btn-buy-now" disabled style="background-color:#ccc; border-color:#ccc; cursor:not-allowed;">Out of Stock</button>
+                {% endif %}
+                {% if request.user.is_authenticated %}
+                <div style="margin-top:10px; text-align:center;">
+                  {% if in_wishlist %}
+                    <a href="{% url 'remove-from-wishlist' product.id %}" style="color:#d9534f; font-size:13px;">
+                      <i class="fa fa-heart"></i> Remove from Wishlist
+                    </a>
+                  {% else %}
+                    <a href="{% url 'add-to-wishlist' product.id %}" style="color:#2F4550; font-size:13px;">
+                      <i class="fa fa-heart-o"></i> Add to Wishlist
+                    </a>
+                  {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reviews Section -->
+<div class="container-fluid" style="max-width:1500px; margin-top:20px;">
+  <div style="background:#fff; border-radius:8px; padding:24px; box-shadow:0 2px 4px rgba(0,0,0,0.08);">
+    <h3 style="color:#2F4550; border-bottom:2px solid #eee; padding-bottom:10px;">
+      Customer Reviews
+      {% if avg_rating %}<small style="color:#586F7C; font-size:16px;"> &mdash; Avg: {{ avg_rating }}/5 &#9733;</small>{% endif %}
+    </h3>
+
+    {% for review in reviews %}
+    <div style="border-bottom:1px solid #eee; padding:12px 0;">
+      <strong>{{ review.customer.get_name }}</strong>
+      <span style="color:#f0ad4e; margin-left:8px;">
+        {% for i in "12345" %}{% if forloop.counter <= review.rating %}&#9733;{% else %}&#9734;{% endif %}{% endfor %}
+      </span>
+      <span style="color:#aaa; font-size:12px; margin-left:8px;">{{ review.created_on }}</span>
+      <p style="margin-top:5px; color:#333;">{{ review.comment }}</p>
+    </div>
+    {% empty %}
+    <p style="color:#aaa;">No reviews yet. Be the first to review!</p>
+    {% endfor %}
+
+    {% if request.user.is_authenticated %}
+    <div style="margin-top:20px;">
+      <h5 style="color:#2F4550;">Write a Review</h5>
+      <form method="POST" action="{% url 'submit-review' product.id %}">
+        {% csrf_token %}
+        <div style="margin-bottom:10px;">
+          <label>Rating</label><br>
+          {{ reviewForm.rating }}
+        </div>
+        <div style="margin-bottom:10px;">
+          <label>Comment</label>
+          {{ reviewForm.comment }}
+        </div>
+        <button type="submit" class="btn btn-primary" style="background:#2F4550; border-color:#2F4550;">Submit Review</button>
+      </form>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).on('click', '.btn-add-cart', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        var $btn = $(this);
+        
+        // Visual feedback immediately
+        $btn.css('opacity', '0.7').prop('disabled', true);
+        
+        $.ajax({
+            url: url,
+            type: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(data) {
+                if (data.status === 'success') {
+                    // Update cart count in navbar
+                    $('.item-number').text(data.cart_count);
+                    
+                    // Show success popup
+                    Swal.fire({
+                        title: 'Added!',
+                        text: data.message,
+                        icon: 'success',
+                        confirmButtonColor: '#2F4550',
+                        timer: 2000,
+                        timerProgressBar: true
+                    });
+                }
+                $btn.css('opacity', '1').prop('disabled', false);
+            },
+            error: function() {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Something went wrong. Please try again.',
+                    icon: 'error',
+                    confirmButtonColor: '#2F4550'
+                });
+                $btn.css('opacity', '1').prop('disabled', false);
+            }
+        });
+    });
+</script>
+{% endblock %}

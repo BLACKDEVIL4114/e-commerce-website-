@@ -1,0 +1,53 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/color_palette_original.css' %}">
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Ecommerce</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+  {%if request.user.is_authenticated%}
+    {% include "ecom/customer_navbar.html" %}
+  {%else%}
+    {% include "ecom/navbar.html" %}
+  {%endif%}
+
+  {% if messages %}
+    <script>
+        $(document).ready(function() {
+            {% for message in messages %}
+                Swal.fire({
+                    title: "{{ message.tags|capfirst }}!",
+                    text: "{{ message }}",
+                    icon: "{{ message.tags }}",
+                    confirmButtonColor: '#2F4550',
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+            {% endfor %}
+        });
+    </script>
+  {% endif %}
+
+  {%block content%}
+
+  {%endblock content%}
+
+  
+  {% include "ecom/footer.html" %}
+
+  {% block scripts %}
+  {% endblock %}
+</body>
+<!--
+-->
+
+</html>
+
+
+

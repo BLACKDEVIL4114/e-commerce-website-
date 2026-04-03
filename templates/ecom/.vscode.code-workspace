@@ -1,0 +1,28 @@
+{
+	"folders": [
+		{
+			"path": "../../.vscode"
+		},
+		{
+			"path": "../../ecom"
+		},
+		{
+			"path": "../../ecommerce"
+		},
+		{
+			"path": "../../scripts"
+		},
+		{
+			"path": "../../static"
+		},
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../venv"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": ".vscode"
+	}
+}

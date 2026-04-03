@@ -1,0 +1,90 @@
+{% extends 'ecom/admin_base.html' %}
+{% block content %}
+
+<style>
+  .add-coupon-page { padding: 90px 0 40px 0; }
+  .add-coupon-card {
+    max-width: 520px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+    overflow: hidden;
+  }
+  .add-coupon-card .card-header {
+    background: linear-gradient(135deg, #2F4550, #586F7C);
+    padding: 22px 28px;
+  }
+  .add-coupon-card .card-header h5 {
+    margin: 0; color: #fff; font-weight: 700; font-size: 17px;
+  }
+  .add-coupon-card .card-header p { margin: 5px 0 0; color: #b0bec5; font-size: 13px; }
+  .add-coupon-card .card-body { padding: 28px; }
+  .add-coupon-card .form-control { border-radius: 6px; }
+  .add-coupon-card label { font-weight: 600; color: #2F4550; margin-bottom: 5px; }
+  .add-coupon-card .hint { font-size: 12px; color: #999; margin-top: 4px; }
+</style>
+
+<div class="container add-coupon-page">
+  <div class="add-coupon-card">
+
+    <div class="card-header">
+      <h5><span class="glyphicon glyphicon-tag" style="margin-right:10px;"></span>Create New Coupon</h5>
+      <p>Fill in the details to generate a new discount coupon</p>
+    </div>
+
+    <div class="card-body">
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label>
+            <span class="glyphicon glyphicon-barcode" style="margin-right:6px;"></span>Coupon Code
+          </label>
+          {{ couponForm.code }}
+          <div class="hint">Use uppercase letters, e.g. SAVE20, FLAT50</div>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <span class="glyphicon glyphicon-remove-circle" style="margin-right:6px;"></span>Discount Percentage
+          </label>
+          <div class="input-group">
+            {{ couponForm.discount_percent }}
+            <span class="input-group-addon">%</span>
+          </div>
+          <div class="hint">Enter a value between 1 and 100</div>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <span class="glyphicon glyphicon-calendar" style="margin-right:6px;"></span>Expiry Date
+            <small style="font-weight:400; color:#999;">(optional)</small>
+          </label>
+          {{ couponForm.expiry }}
+          <div class="hint">Leave blank for a coupon that never expires</div>
+        </div>
+
+        <div class="form-group" style="display:flex; align-items:center; gap:10px; background:#f7f9fc; border-radius:8px; padding:12px 16px; margin-bottom:20px;">
+          {{ couponForm.active }}
+          <label style="margin:0; cursor:pointer; font-weight:600; color:#2F4550;">
+            Make this coupon active immediately
+          </label>
+        </div>
+
+        <div style="display:flex; gap:10px;">
+          <button type="submit" class="btn btn-success btn-block" style="border-radius:6px; font-weight:600; padding:10px;">
+            <span class="glyphicon glyphicon-ok" style="margin-right:8px;"></span>Create Coupon
+          </button>
+          <a href="{% url 'admin-coupons' %}" class="btn btn-default btn-block" style="border-radius:6px; padding:10px;">
+            Cancel
+          </a>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>
+
+{% endblock content %}

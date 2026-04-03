@@ -1,0 +1,127 @@
+{% extends 'ecom/admin_base.html' %}
+{% load static %}
+{% block content %}
+
+<head>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+
+    h6 {
+      text-align: center;
+    }
+
+    .container {
+      margin-top: 50px;
+    }
+
+    .panel-primary {
+      border-color: #2F4550;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .panel-heading {
+      background-color: #2F4550 !important;
+      border-color: #2F4550 !important;
+      padding: 15px;
+    }
+
+    .panel-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #F4F4F9 !important;
+    }
+
+    .table thead tr th {
+      background-color: #F4F4F9;
+      color: #2F4550;
+      border-bottom: 2px solid #B8DBD9;
+      padding: 12px;
+    }
+
+    .table tbody tr td {
+      padding: 12px;
+      vertical-align: middle;
+      color: #586F7C;
+    }
+
+    .label-danger {
+      background-color: #d9534f;
+    }
+
+    .label-warning {
+      background-color: #f0ad4e;
+    }
+
+    .btn-danger {
+      background-color: #d9534f;
+      border: none;
+      transition: opacity 0.3s;
+    }
+
+    .btn-danger:hover {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+
+<div class="container">
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h6 class="panel-title">Product Query</h6>
+    </div>
+    <table class="table table-hover" id="dev-table">
+      <thead>
+        <tr>
+          <th>Customer Name</th>
+          <th>Customer Mobile</th>
+          <th>Product Name</th>
+          <th>Status</th>
+          <th>Reason</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      {% for product,customer,order in data %}
+      <tr>
+        {% for c in customer %}
+        <td> {{c.get_name}}</td>
+        <td>{{c.mobile}}</td>
+        {% endfor %}
+        
+        {% for p in product %}
+        <td> {{p.name}}</td>
+        {% endfor %}
+
+        <td>
+          {% if order.status == 'Cancelled' or order.status == 'Cancellation Requested' %}
+            <span class="label label-danger">Cancellation</span>
+          {% elif order.status == 'Return Requested' %}
+            <span class="label label-warning">Return</span>
+          {% endif %}
+        </td>
+        
+        <td style="font-style: italic;">
+          {% if order.status == 'Return Requested' %}
+            {{order.return_reason}}
+          {% elif order.cancellation_reason %}
+            {{order.cancellation_reason}}
+          {% else %}
+            -
+          {% endif %}
+        </td>
+        
+        <td><a class="btn btn-danger btn-xs" href="{% url 'delete-order' order.id  %}"><span class="glyphicon glyphicon-trash"></span></a></td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+{% endblock content %}

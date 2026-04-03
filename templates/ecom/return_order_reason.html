@@ -1,0 +1,180 @@
+{% extends 'ecom/customer_base.html' %}
+{% block content %}
+<style>
+    body {
+        background-color: #F4F4F9;
+    }
+    .return-card {
+        margin-top: 50px;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    .card-header {
+        background: #2F4550;
+        color: #F4F4F9;
+        text-align: center;
+        padding: 20px;
+        font-weight: 600;
+        font-size: 22px;
+        border: none;
+    }
+    .card-body {
+        padding: 30px;
+        background: #fff;
+    }
+    .form-label {
+        color: #2F4550;
+        font-weight: 600;
+        margin-bottom: 15px;
+        font-size: 16px;
+    }
+    .form-control {
+        border: 2px solid #B8DBD9;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 15px;
+        transition: border-color 0.3s;
+    }
+    .form-control:focus {
+        border-color: #586F7C;
+        box-shadow: none;
+    }
+    .btn-return-submit {
+        background-color: #2F4550;
+        color: #F4F4F9;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 25px;
+        font-weight: 600;
+        width: 100%;
+        margin-top: 20px;
+        transition: background-color 0.3s;
+    }
+    .btn-return-submit:hover {
+        background-color: #586F7C;
+        color: #fff;
+    }
+    .back-to-orders {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        color: #586F7C;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .back-to-orders:hover {
+        color: #2F4550;
+        text-decoration: underline;
+    }
+    .order-summary {
+        background-color: #F4F4F9;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        border-left: 5px solid #2F4550;
+    }
+    .order-summary-title {
+        color: #2F4550;
+        font-size: 14px;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+    .order-summary-info {
+        color: #586F7C;
+        font-size: 16px;
+    }
+    .reason-option {
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #B8DBD9;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .reason-option:hover {
+        background-color: #F4F4F9;
+        border-color: #586F7C;
+    }
+    .reason-option input {
+        margin-right: 10px;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card return-card">
+                <div class="card-header">
+                    Return Product
+                </div>
+                <div class="card-body">
+                    <div class="order-summary">
+                        <div class="order-summary-title">Products</div>
+                        <div class="order-summary-info">
+                            {% for item in order.items.all %}
+                                {{ item.product.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="order-summary-title" style="margin-top: 10px;">Delivered Date</div>
+                        <div class="order-summary-info">{{ order.order_date }}</div>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="form-label">Why are you returning this product?</label>
+                            
+                            <div class="reason-option">
+                                <input type="radio" name="reason" value="Product is damaged" id="r1" required>
+                                <label for="r1" style="cursor:pointer; margin:0;">Product is damaged</label>
+                            </div>
+                            
+                            <div class="reason-option">
+                                <input type="radio" name="reason" value="Item is not as described" id="r2">
+                                <label for="r2" style="cursor:pointer; margin:0;">Item is not as described</label>
+                            </div>
+                            
+                            <div class="reason-option">
+                                <input type="radio" name="reason" value="Quality not as expected" id="r3">
+                                <label for="r3" style="cursor:pointer; margin:0;">Quality not as expected</label>
+                            </div>
+                            
+                            <div class="reason-option">
+                                <input type="radio" name="reason" value="Wrong item received" id="r4">
+                                <label for="r4" style="cursor:pointer; margin:0;">Wrong item received</label>
+                            </div>
+                            
+                            <div class="reason-option">
+                                <input type="radio" name="reason" value="Other" id="r5">
+                                <label for="r5" style="cursor:pointer; margin:0;">Other</label>
+                            </div>
+
+                            <textarea class="form-control" name="additional_reason" id="other_reason" rows="3" placeholder="Additional details (optional)..." style="margin-top:15px;"></textarea>
+                        </div>
+                        <button type="submit" class="btn-return-submit">
+                            Submit Return Request
+                        </button>
+                    </form>
+                    <a href="{% url 'my-order' %}" class="back-to-orders">
+                        <i class="fa fa-arrow-left"></i> Go back to orders
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Combine radio button value with textarea if needed
+    document.querySelector('form').onsubmit = function() {
+        var selected = document.querySelector('input[name="reason"]:checked').value;
+        var additional = document.getElementById('other_reason').value;
+        if(additional) {
+            document.querySelector('input[name="reason"]:checked').value = selected + ": " + additional;
+        }
+    };
+</script>
+{% endblock content %}

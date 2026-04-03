@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+{% load widget_tweaks %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Customer Signup</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #00171F 0%, #003459 25%, #007EA7 75%, #00A8E8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 12px;
+      box-sizing: border-box;
+    }
+
+    .signup-box {
+      width: 100%;
+      max-width: 560px;
+      background: #fff;
+      border-radius: 14px;
+      padding: 30px 24px;
+      box-shadow: 0 10px 30px rgba(0, 23, 31, 0.28);
+      text-align: center;
+    }
+
+    .signup-title {
+      margin: 0 0 8px;
+      color: #00171F;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .signup-subtitle {
+      margin: 0 0 18px;
+      color: #51616b;
+      font-size: 16px;
+    }
+
+    .signup-input {
+      width: 100%;
+      box-sizing: border-box;
+      height: 48px;
+      border: 2px solid #007EA7;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      font-size: 16px;
+      color: #00171F;
+      outline: none;
+    }
+
+    .signup-input:focus {
+      border-color: #00A8E8;
+      background-color: #f0f8ff;
+    }
+
+    .password-wrap {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .password-wrap .signup-input {
+      margin-bottom: 0;
+      padding-right: 72px;
+    }
+
+    .show-pass-btn {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      color: #007EA7;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .show-pass-btn:focus {
+      outline: none;
+    }
+
+    .signup-submit {
+      border: 2px solid #007EA7;
+      background: linear-gradient(135deg, #007EA7, #00A8E8);
+      color: #fff;
+      border-radius: 28px;
+      padding: 12px 42px;
+      font-size: 16px;
+      font-weight: 700;
+      margin-top: 10px;
+      min-width: 180px;
+      cursor: pointer;
+    }
+
+    .signup-submit:hover {
+      background: linear-gradient(135deg, #00A8E8, #007EA7);
+    }
+  </style>
+</head>
+<body>
+  <form class="signup-box" method="post">
+    {% csrf_token %}
+    <h1 class="signup-title">Customer Signup</h1>
+    <p class="signup-subtitle">Please enter your details to create account!</p>
+
+    {% render_field userForm.first_name class="signup-input" placeholder="First Name" %}
+    {% render_field userForm.last_name class="signup-input" placeholder="Last Name" %}
+    {% render_field userForm.username class="signup-input" placeholder="Username" %}
+
+    <div class="password-wrap">
+      {% render_field userForm.password class="signup-input" placeholder="Password" id="signup-password" %}
+      <button type="button" class="show-pass-btn" id="toggle-signup-password">Show</button>
+    </div>
+
+    {% render_field customerForm.address class="signup-input" placeholder="Address" %}
+    {% render_field customerForm.mobile class="signup-input" placeholder="Mobile" %}
+
+    <input type="submit" value="Create" class="signup-submit">
+  </form>
+
+  <script>
+    (function () {
+      var passwordInput = document.getElementById("signup-password");
+      var toggleBtn = document.getElementById("toggle-signup-password");
+      if (!passwordInput || !toggleBtn) return;
+
+      toggleBtn.addEventListener("click", function () {
+        var isPassword = passwordInput.type === "password";
+        passwordInput.type = isPassword ? "text" : "password";
+        toggleBtn.textContent = isPassword ? "Hide" : "Show";
+      });
+    })();
+  </script>
+</body>
+</html>

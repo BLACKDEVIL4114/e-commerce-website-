@@ -1,0 +1,204 @@
+{% extends 'ecom/customer_base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+.panel-title {
+    display: inline;
+    font-weight: bold;
+}
+.checkbox.pull-right {
+    margin: 0;
+}
+.pl-ziro {
+    padding-left: 0px;
+}
+</style>
+
+<br><br><br><br>
+
+<div class="container" style="text-align:center; padding-left:300px;">
+    <div class="row">
+        <div class="col-xs-12 col-md-4" style="width:600px;">
+
+            <div class="panel panel-default">
+
+                <div class="panel-heading">
+                    <h3 class="panel-title">Payment Details</h3>
+                    <div class="checkbox pull-right">
+                        <label>
+                            <input type="checkbox"> Remember
+                        </label>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+
+                    <!-- FORM -->
+                    <form method="post" 
+                          action="{% url 'payment-success' %}" 
+                          id="paymentForm">
+
+                        {% csrf_token %}
+
+                        <!-- CARD NUMBER -->
+                        <div class="form-group">
+                            <label>CARD NUMBER</label>
+                            <div class="input-group">
+                                <input type="tel"
+                                       class="form-control"
+                                       id="cardNumber"
+                                       name="cardNumber"
+                                       placeholder="Valid Card Number"
+                                       maxlength="16"
+                                       required>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-lock"></span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- EXPIRY + CVV -->
+                        <div class="row">
+
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>MM</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="expityMonth"
+                                           placeholder="MM"
+                                           maxlength="2"
+                                           required>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>YYYY</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="expityYear"
+                                           placeholder="YYYY"
+                                           maxlength="4"
+                                           required>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-4">
+                                <div class="form-group">
+                                    <label>CVV</label>
+                                    <input type="tel"
+                                           class="form-control"
+                                           id="cvCode"
+                                           name="cvCode"
+                                           placeholder="CVV"
+                                           maxlength="3"
+                                           required>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- PAY BUTTON -->
+                        <button type="submit"
+                                class="btn btn-primary btn-block">
+                            Pay
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <!-- COUPON APPLY -->
+            {% if not discount %}
+            <div style="margin-bottom:20px; padding: 15px; background:#f9f9f9; border:1px solid #ddd; border-radius:6px; text-align:left;">
+              <strong>Have a coupon code?</strong>
+              <form method="POST" action="{% url 'apply-coupon' %}" style="margin-top:8px;">
+                {% csrf_token %}
+                <input type="hidden" name="redirect_to" value="/payment">
+                <div style="display:flex; gap:8px;">
+                  <input type="text" name="coupon_code" class="form-control" placeholder="Enter coupon code" required>
+                  <button type="submit" class="btn btn-success">Apply</button>
+                </div>
+              </form>
+            </div>
+            {% else %}
+            <div style="margin-bottom:20px; padding: 15px; background:#e8f5e9; border:1px solid #c8e6c9; border-radius:6px; text-align:left; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <strong style="color:#2e7d32;">Coupon Applied:</strong> {{ coupon_code }}
+              </div>
+              <a href="{% url 'payment' %}?remove_coupon=1" class="btn btn-xs btn-default">Remove</a>
+            </div>
+            {% endif %}
+
+            <!-- FINAL PAYMENT -->
+            <ul class="nav nav-pills nav-stacked">
+                {% if discount %}
+                <li>
+                    <a href="#" style="background:#f9f9f9; color:#666; cursor:default;">
+                        <span class="pull-right">₹{{ original_total }}</span>
+                        Original Price
+                    </a>
+                </li>
+                <li>
+                    <a href="#" style="background:#e8f5e9; color:#2e7d32; cursor:default;">
+                        <span class="pull-right">- ₹{{ discount_amount }}</span>
+                        Discount ({{ coupon_code }}: {{ discount }}%)
+                    </a>
+                </li>
+                {% endif %}
+                <li class="active">
+                    <a href="#" style="background:#2F4550; border-color:#2F4550;">
+                        <span class="badge pull-right" style="font-size:18px;">
+                            ₹{{ total }}
+                        </span>
+                        <span style="font-size:16px; font-weight:bold;">Final Payment</span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT VALIDATION -->
+<script>
+
+document.getElementById("paymentForm").addEventListener("submit", function(event){
+
+    const cardNumber = document.getElementById("cardNumber").value.trim();
+    const cvv = document.getElementById("cvCode").value.trim();
+    const mm = document.getElementById("expityMonth").value.trim();
+    const yyyy = document.getElementById("expityYear").value.trim();
+
+    if(!/^\d{16}$/.test(cardNumber)){
+        alert("Card number must be 16 digits !");
+        event.preventDefault();
+        return;
+    }
+
+    if(!/^\d{3}$/.test(cvv)){
+        alert("CVV must be 3 digits !");
+        event.preventDefault();
+        return;
+    }
+
+    if(!/^\d{1,2}$/.test(mm) || parseInt(mm) < 1 || parseInt(mm) > 12){
+        alert("MM must be between 01 and 12 !");
+        event.preventDefault();
+        return;
+    }
+
+    if(!/^\d{4}$/.test(yyyy) || parseInt(yyyy) < new Date().getFullYear()){
+        alert("YYYY must be current or future year !");
+        event.preventDefault();
+        return;
+    }
+});
+
+</script>
+
+{% endblock content %}

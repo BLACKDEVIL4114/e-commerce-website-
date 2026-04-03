@@ -1,0 +1,182 @@
+/* ============================================
+   ECOMMERCE PROJECT COLOR PALETTE
+   ============================================ */
+
+:root {
+  /* Primary Colors */
+  --color-black: #000000;
+  --color-dark-navy: #2F4550;
+  --color-steel-blue: #586F7C;
+  --color-light-teal: #B8DBD9;
+  --color-off-white: #F4F4F9;
+  
+  /* Usage Mapping */
+  --navbar-bg: #2F4550;
+  --navbar-text: #F4F4F9;
+  --button-primary: #2F4550;
+  --button-secondary: #586F7C;
+  --button-hover: #586F7C;
+  --body-bg: #F4F4F9;
+  --footer-bg: #2F4550;
+  --footer-text: #F4F4F9;
+  --card-bg: #ffffff;
+  --card-hover-overlay: #586F7C;
+  --text-primary: #2F4550;
+  --text-secondary: #586F7C;
+  --border-color: #B8DBD9;
+  --success-color: #586F7C;
+  --status-active: #2F4550;
+}
+
+/* ============================================
+   COLOR PALETTE GUIDE
+   ============================================ */
+
+/*
+  PRIMARY DARK COLOR (#000000)
+  - Reserve for special emphasis
+  - High contrast situations
+  
+  DARK NAVY (#2F4550)
+  - Navigation bars
+  - Primary buttons
+  - Footer background
+  - Active status indicators
+  - Form headers
+  
+  STEEL BLUE (#586F7C)
+  - Secondary buttons
+  - Hover effects
+  - Search button
+  - Card overlays
+  - Accents
+  
+  LIGHT TEAL (#B8DBD9)
+  - Borders
+  - Light accents
+  - Background variations
+  - Hover highlights (future use)
+  
+  OFF-WHITE (#F4F4F9)
+  - Page backgrounds
+  - Card backgrounds
+  - Text surfaces
+  - Clean white spaces
+*/
+
+/* ============================================
+   APPLIED UPDATES IN PROJECT
+   ============================================ */
+
+/* Navigation & Header */
+body {
+  background-color: #F4F4F9;  /* Off-white background */
+}
+
+#navbar {
+  background-color: #2F4550;  /* Dark navy navbar */
+  color: #F4F4F9;             /* Off-white text */
+}
+
+.navbar-button {
+  background-color: #586F7C;  /* Steel blue buttons */
+  color: #F4F4F9;             /* Off-white text */
+}
+
+.cart-button {
+  background-color: #586F7C;  /* Steel blue cart button */
+  color: #F4F4F9;             /* Off-white text */
+}
+
+/* Footer */
+footer {
+  background-color: #2F4550;  /* Dark navy footer */
+  color: #F4F4F9;             /* Off-white text */
+}
+
+/* Forms */
+.note {
+  background: linear-gradient(to right, #2F4550, #586F7C);  /* Gradient header */
+  color: #fff;
+}
+
+.btnSubmit {
+  background: #2F4550;  /* Dark navy submit button */
+  color: #fff;
+}
+
+/* Product Cards */
+.el-wrapper {
+  background-color: #fff;  /* White cards */
+}
+
+.h-bg {
+  background-color: #586F7C;  /* Steel blue overlay */
+}
+
+.h-bg .h-bg-inner {
+  background-color: #2F4550;  /* Dark navy inner */
+}
+
+/* Status & Indicators */
+.track .step.active .icon {
+  background: #2F4550;  /* Dark navy active status */
+}
+
+.track .step.active:before {
+  background: #586F7C;  /* Steel blue progress bar */
+}
+
+.button {
+  background-color: #2F4550;  /* Dark navy button */
+}
+
+/* ============================================
+   HOW TO USE THIS PALETTE
+   ============================================ */
+
+/* 1. Consistent Navbar */
+#navbar, .navbar {
+  background-color: var(--navbar-bg);
+  color: var(--navbar-text);
+}
+
+/* 2. Button Styling */
+.btn-primary {
+  background-color: var(--button-primary);
+}
+
+.btn-secondary {
+  background-color: var(--button-secondary);
+}
+
+/* 3. Card Hover Effects */
+.card:hover {
+  box-shadow: 0 4px 8px rgba(47, 69, 80, 0.2);  /* Subtle navy shadow */
+}
+
+/* 4. Status Indicators */
+.status.active {
+  background-color: var(--status-active);
+  color: var(--navbar-text);
+}
+
+.status.inactive {
+  background-color: var(--text-secondary);
+  color: var(--navbar-text);
+}
+
+/* ============================================
+   MAINTENANCE NOTES
+   ============================================ */
+
+/*
+  To update colors across the entire project:
+  1. Modify the CSS variables in :root
+  2. Replace inline colors in HTML with CSS variables
+  3. Use the provided hex codes consistently
+  4. Test across all pages (home, admin, customer)
+  
+  Current Implementation: Inline hex codes in HTML
+  Future Improvement: Migrate to CSS variables for easier maintenance
+*/

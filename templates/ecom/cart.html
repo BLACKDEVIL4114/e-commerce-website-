@@ -1,0 +1,274 @@
+{% extends 'ecom/homebase.html' %}
+{% load static %}
+{% block content %}
+
+<head>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  <style media="screen">
+    body, html {
+        background-color: #F4F4F9;
+    }
+
+    /* Panel Styling */
+    .panel-primary {
+        border-color: #2F4550;
+        border: none;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+    .panel-primary > .panel-heading {
+        background-color: #2F4550;
+        border-color: #2F4550;
+        padding: 15px;
+    }
+    .panel-title {
+        color: white;
+    }
+
+    /* Button Styling */
+    .btn-action {
+      background-color: #2F4550;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 25px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .btn-action:hover {
+      background-color: #586F7C;
+      color: white;
+      text-decoration: none;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+    }
+    
+    .btn-total {
+        background-color: white;
+        color: #2F4550;
+        border: 2px solid #2F4550;
+        padding: 10px 25px;
+        border-radius: 25px;
+        font-weight: bold;
+        margin-right: 15px;
+        cursor: default;
+    }
+
+    /* Table Styling */
+    .table {
+        margin-bottom: 0;
+    }
+    .table > thead > tr > th {
+        border-bottom: 2px solid #eee;
+        color: #2F4550;
+        padding: 15px;
+    }
+    .table > tbody > tr > td {
+        vertical-align: middle;
+        padding: 15px;
+        color: #333;
+    }
+
+    /* Responsive Table Logic */
+    @media only screen and (max-width: 768px) {
+        /* Force table to not be like tables anymore */
+        table, thead, tbody, th, td, tr { 
+            display: block; 
+        }
+        
+        /* Hide table headers */
+        thead tr { 
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+        
+        tr { 
+            margin-bottom: 20px; 
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 15px;
+            border: 1px solid #eee;
+        }
+        
+        td { 
+            /* Behave like a "row" */
+            border: none !important;
+            border-bottom: 1px solid #eee !important; 
+            position: relative;
+            padding-left: 40% !important; 
+            padding-top: 12px !important;
+            padding-bottom: 12px !important;
+            text-align: right;
+            min-height: 45px;
+        }
+
+        td:last-child {
+            border-bottom: none !important;
+        }
+        
+        td:before { 
+            /* Now like a table header */
+            position: absolute;
+            top: 12px;
+            left: 10px;
+            width: 35%; 
+            padding-right: 10px; 
+            white-space: nowrap;
+            font-weight: 700;
+            text-align: left;
+            content: attr(data-label);
+            color: #2F4550;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        /* Adjust image in responsive view */
+        td[data-label="Image"] {
+            text-align: right;
+        }
+        td[data-label="Image"] img {
+            height: 60px !important;
+            width: auto !important;
+        }
+    }
+
+    .container {
+        padding-top: 40px;
+        padding-bottom: 60px;
+    }
+
+    .remove-btn {
+        background-color: #d9534f;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        transition: 0.3s;
+    }
+    .remove-btn:hover {
+        background-color: #c9302c;
+        color: white;
+    }
+    .qty-controls {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .qty-btn {
+        background: #2F4550;
+        color: #fff;
+        border-radius: 4px;
+        padding: 4px 10px;
+        text-decoration: none;
+        font-weight: 700;
+    }
+    .qty-btn:hover {
+        color: #fff;
+        background: #586F7C;
+        text-decoration: none;
+    }
+    .qty-value {
+        min-width: 24px;
+        text-align: center;
+        font-weight: 700;
+        color: #2F4550;
+    }
+    .img-box {
+        width: 84px;
+        height: 84px;
+        border: 1px solid #dbe3e8;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        margin: 0 auto;
+    }
+    .cart-img {
+        width: 72px;
+        height: 72px;
+        object-fit: contain;
+    }
+  </style>
+</head>
+
+<div class="container">
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h6 style="text-align:center; margin:0;" class="panel-title">My Cart</h6>
+    </div>
+    <table class="table table-hover" id="dev-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Image</th>
+          <th>Price</th>
+          <th>Qty</th>
+          <th>Line Total</th>
+          <th>Description</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for item in cart_items %}
+      {% if item.product %}
+      <tr>
+        <td data-label="Product" style="color: #2F4550;">{{item.product.name}}</td>
+        <td data-label="Image">
+          <div class="img-box">
+          {% if item.product.product_image %}
+            <img src="{{ item.product.product_image.url }}" alt="Product Image" class="cart-img" />
+          {% else %}
+            <img src="{% static 'images/success.png' %}" alt="No Image" class="cart-img" />
+          {% endif %}
+          </div>
+        </td>
+        <td data-label="Price" style="color: #2F4550;">{{item.product.price}}</td>
+        <td data-label="Qty">
+            <div class="qty-controls">
+              <a class="qty-btn" href="{% url 'remove-from-cart' item.product.id %}" title="Decrease">-</a>
+              <span class="qty-value">{{ item.quantity }}</span>
+              <a class="qty-btn" href="{% url 'add-to-cart' item.product.id %}" title="Increase">+</a>
+            </div>
+        </td>
+        <td data-label="Line Total" style="color: #2F4550;">{{ item.line_total }}</td>
+        <td data-label="Description" style="color: #666;">{{item.product.description|truncatechars:50}}</td>
+        <td data-label="Action">
+            <a class="remove-btn" href="{% url 'remove-all-from-cart' item.product.id %}">
+                <span class="glyphicon glyphicon-trash"></span> 
+            </a>
+        </td>
+      </tr>
+      {% else %}
+      <!-- Empty slot handling if needed -->
+      {% endif %}
+      {% empty %}
+       <tr>
+          <td colspan="7" style="text-align: center; padding: 60px;">
+              <span class="glyphicon glyphicon-shopping-cart" style="font-size: 80px; color: #ddd; margin-bottom: 20px;"></span>
+              <h2 style="font-weight: bold; color: #2F4550;">Your cart is empty</h2>
+              <p style="color: #586F7C; font-size: 16px; margin-bottom: 25px;">Add some products to get started</p>
+              <a href="/" class="btn btn-primary" style="background-color: #2F4550; border-color: #2F4550; padding: 10px 30px; border-radius: 25px; font-weight: 600;">Browse products</a>
+          </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+  <br>
+
+  {% if cart_items %}
+  <div style="text-align: center; margin-top: 20px;">
+    <button class="btn-total">Total: {{total}}</button>
+    <a href="/customer-address" style="text-decoration: none;">
+        <button class="btn-action">Purchase <span class="glyphicon glyphicon-chevron-right"></span></button>
+    </a>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock content %}

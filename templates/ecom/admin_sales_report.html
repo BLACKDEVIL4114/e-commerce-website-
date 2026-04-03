@@ -1,0 +1,327 @@
+{% extends 'ecom/admin_base.html' %}
+{% block content %}
+<style>
+  body { background-color: #F4F4F9; }
+
+  .report-header {
+    background: linear-gradient(135deg, #2F4550 0%, #1a2a33 100%);
+    color: #fff;
+    padding: 30px 30px 20px 30px;
+    margin-bottom: 0;
+  }
+  .report-header h2 {
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0 0 5px 0;
+    letter-spacing: 0.5px;
+  }
+  .report-header p {
+    margin: 0;
+    color: #b0c4ce;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  /* Filter Bar */
+  .filter-bar {
+    background: #fff;
+    padding: 18px 24px;
+    border-bottom: 1px solid #e1e8ed;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .filter-bar label {
+    font-weight: 600;
+    color: #2F4550;
+    margin-bottom: 0;
+    margin-right: 4px;
+    font-size: 14px;
+  }
+  .filter-bar input[type="date"] {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 14px;
+    color: #2F4550;
+    outline: none;
+    transition: border 0.2s;
+  }
+  .filter-bar input[type="date"]:focus {
+    border-color: #2F4550;
+  }
+  .btn-filter {
+    background: #2F4550;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-filter:hover { background: #1a2a33; }
+  .btn-clear {
+    background: transparent;
+    color: #586F7C;
+    border: 1px solid #586F7C;
+    border-radius: 6px;
+    padding: 7px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+  }
+  .btn-clear:hover {
+    background: #586F7C;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  /* Stat Cards */
+  .stats-row {
+    display: flex;
+    gap: 20px;
+    padding: 24px;
+    flex-wrap: wrap;
+  }
+  .stat-card {
+    flex: 1;
+    min-width: 180px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 22px 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    transition: box-shadow 0.2s;
+  }
+  .stat-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+  .stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .stat-icon.blue  { background: #e8f0fe; color: #1355f9; }
+  .stat-icon.green { background: #e6f4ea; color: #1e7e34; }
+  .stat-icon.orange{ background: #fff3e0; color: #FC8213; }
+  .stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #586F7C;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: #2F4550;
+    line-height: 1;
+  }
+
+  /* Table Section */
+  .table-section {
+    padding: 0 24px 30px 24px;
+  }
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2F4550;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 16px 0 12px 0;
+    border-bottom: 2px solid #2F4550;
+    margin-bottom: 16px;
+  }
+  .report-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .report-table thead tr {
+    background: #2F4550;
+    color: #fff;
+  }
+  .report-table thead th {
+    padding: 14px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .report-table tbody tr {
+    border-bottom: 1px solid #f0f2f4;
+    transition: background 0.15s;
+  }
+  .report-table tbody tr:hover { background: #f7f9fb; }
+  .report-table tbody td {
+    padding: 14px 18px;
+    font-size: 14px;
+    color: #2F4550;
+    vertical-align: middle;
+  }
+  .report-table tbody tr:last-child { border-bottom: none; }
+
+  .order-id {
+    font-weight: 700;
+    color: #1355f9;
+  }
+  .customer-name {
+    font-weight: 600;
+  }
+  .amount {
+    font-weight: 700;
+    color: #1e7e34;
+  }
+
+  /* Status badges */
+  .badge-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .badge-delivered  { background: #e6f4ea; color: #1e7e34; }
+  .badge-pending    { background: #e8f0fe; color: #1355f9; }
+  .badge-cancelled  { background: #fce8e6; color: #c0392b; }
+  .badge-confirmed  { background: #e3f9e5; color: #2e7d32; }
+  .badge-delivery   { background: #fff3e0; color: #e65100; }
+  .badge-return     { background: #fff8e1; color: #f57f17; }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #586F7C;
+  }
+  .empty-state .fa { font-size: 50px; color: #ddd; margin-bottom: 15px; }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<div style="max-width:1200px; margin: 30px auto; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+
+  <!-- Header -->
+  <div class="report-header">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+      <div>
+        <h2><i class="fa fa-bar-chart" style="margin-right:10px;"></i>Sales Report</h2>
+        <p>Track your revenue and order performance</p>
+      </div>
+      {% if from_date or to_date %}
+      <div style="background:rgba(255,255,255,0.12); padding:8px 16px; border-radius:8px; font-size:13px; color:#e0eaf0;">
+        <i class="fa fa-calendar"></i>&nbsp;
+        {{ from_date|default:"Start" }} &mdash; {{ to_date|default:"Today" }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <form method="GET" style="display:flex; align-items:center; flex-wrap:wrap; gap:12px; margin:0;">
+      <label>From:</label>
+      <input type="date" name="from_date" value="{{ from_date }}">
+      <label>To:</label>
+      <input type="date" name="to_date" value="{{ to_date }}">
+      <button type="submit" class="btn-filter"><i class="fa fa-filter"></i> Filter</button>
+      <a href="{% url 'admin-sales-report' %}" class="btn-clear"><i class="fa fa-times"></i> Clear</a>
+    </form>
+  </div>
+
+  <!-- Stat Cards -->
+  <div style="background:#F4F4F9; padding: 4px 0;">
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa fa-shopping-bag"></i></div>
+        <div>
+          <div class="stat-label">Total Orders</div>
+          <div class="stat-value">{{ total_orders }}</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green"><i class="fa fa-inr"></i></div>
+        <div>
+          <div class="stat-label">Total Revenue</div>
+          <div class="stat-value">&#8377; {{ total_revenue }}</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon orange"><i class="fa fa-line-chart"></i></div>
+        <div>
+          <div class="stat-label">Avg. Order Value</div>
+          <div class="stat-value">
+            &#8377; {% if total_orders %}{% widthratio total_revenue total_orders 1 %}{% else %}0{% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-section" style="background:#F4F4F9;">
+    <div class="section-title"><i class="fa fa-list"></i> Order Details</div>
+
+    {% if orders %}
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for order in orders %}
+        <tr>
+          <td><span class="order-id">#{{ order.id }}</span></td>
+          <td><span class="customer-name">{{ order.customer.get_name|default:"N/A" }}</span></td>
+          <td><i class="fa fa-calendar-o" style="color:#aaa; margin-right:5px;"></i>{{ order.order_date }}</td>
+          <td>
+            {% if order.status == 'Delivered' %}
+              <span class="badge-status badge-delivered"><i class="fa fa-check-circle"></i> Delivered</span>
+            {% elif order.status == 'Pending' %}
+              <span class="badge-status badge-pending"><i class="fa fa-clock-o"></i> Pending</span>
+            {% elif order.status == 'Cancelled' %}
+              <span class="badge-status badge-cancelled"><i class="fa fa-times-circle"></i> Cancelled</span>
+            {% elif order.status == 'Order Confirmed' %}
+              <span class="badge-status badge-confirmed"><i class="fa fa-check"></i> Confirmed</span>
+            {% elif order.status == 'Out for Delivery' %}
+              <span class="badge-status badge-delivery"><i class="fa fa-truck"></i> Out for Delivery</span>
+            {% else %}
+              <span class="badge-status badge-return"><i class="fa fa-refresh"></i> {{ order.status }}</span>
+            {% endif %}
+          </td>
+          <td><span class="amount">&#8377; {{ order.total_amount }}</span></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state" style="background:#fff; border-radius:10px;">
+      <div><i class="fa fa-bar-chart"></i></div>
+      <h4 style="color:#2F4550; font-weight:700;">No orders found</h4>
+      <p>Try adjusting the date range filter.</p>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+<br><br>
+{% endblock content %}

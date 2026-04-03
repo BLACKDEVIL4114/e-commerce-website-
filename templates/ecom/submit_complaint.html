@@ -1,0 +1,87 @@
+{% extends 'ecom/customer_base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container" style="margin-top: 30px; max-width: 750px;">
+
+  <!-- Page Header -->
+  <div style="background: linear-gradient(135deg, #2F4550, #586F7C); border-radius: 10px; padding: 25px 30px; margin-bottom: 25px; color: #fff;">
+    <h3 style="margin:0; font-size:22px;">
+      <span class="glyphicon glyphicon-exclamation-sign" style="margin-right:10px;"></span>
+      Submit a Complaint
+    </h3>
+    <p style="margin: 8px 0 0; color: #cfd8dc; font-size: 14px;">
+      We're sorry to hear you had an issue. Please fill in the details below and we will get back to you shortly.
+    </p>
+  </div>
+
+  <!-- Quick links -->
+  <div style="margin-bottom: 20px;">
+    <a href="/my-complaints" class="btn btn-default btn-sm">
+      <span class="glyphicon glyphicon-list"></span> View My Complaints
+    </a>
+    <a href="/customer-home" class="btn btn-default btn-sm" style="margin-left:8px;">
+      <span class="glyphicon glyphicon-home"></span> Back to Home
+    </a>
+  </div>
+
+  <!-- Complaint Form Card -->
+  <div class="panel panel-default" style="border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.10);">
+    <div class="panel-body" style="padding: 30px;">
+      <form method="POST">
+        {% csrf_token %}
+
+        <!-- Product -->
+        <div class="form-group">
+          <label for="id_product" style="font-weight: 600; color: #2F4550;">
+            <span class="glyphicon glyphicon-tag" style="margin-right:6px;"></span>
+            Related Product <span style="color:#aaa; font-weight:400; font-size:13px;">(optional)</span>
+          </label>
+          {{ complaintForm.product }}
+          <small class="text-muted">Leave as "--------" if your complaint is not about a specific product.</small>
+        </div>
+
+        <!-- Complaint Type -->
+        <div class="form-group">
+          <label for="id_complaint_type" style="font-weight: 600; color: #2F4550;">
+            <span class="glyphicon glyphicon-list-alt" style="margin-right:6px;"></span>
+            Complaint Type
+          </label>
+          {{ complaintForm.complaint_type }}
+        </div>
+
+        <!-- Subject -->
+        <div class="form-group">
+          <label for="id_subject" style="font-weight: 600; color: #2F4550;">
+            <span class="glyphicon glyphicon-pencil" style="margin-right:6px;"></span>
+            Subject
+          </label>
+          {{ complaintForm.subject }}
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label for="id_description" style="font-weight: 600; color: #2F4550;">
+            <span class="glyphicon glyphicon-comment" style="margin-right:6px;"></span>
+            Description
+          </label>
+          {{ complaintForm.description }}
+          <small class="text-muted">Please be as detailed as possible to help us resolve your issue faster.</small>
+        </div>
+
+        <!-- Submit -->
+        <div style="margin-top: 20px; text-align: right;">
+          <a href="/customer-home" class="btn btn-default" style="margin-right: 10px;">Cancel</a>
+          <button type="submit" class="btn btn-primary" style="background-color:#2F4550; border-color:#2F4550; padding: 8px 30px;">
+            <span class="glyphicon glyphicon-send" style="margin-right:6px;"></span>
+            Submit Complaint
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>
+
+{% endblock content %}

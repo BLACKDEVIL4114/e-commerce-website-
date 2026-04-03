@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+{% load widget_tweaks %}
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <style media="screen">
+      body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background: linear-gradient(135deg, #00171F 0%, #003459 25%, #007EA7 75%, #00A8E8 100%);
+    min-height: 100vh;
+}
+
+.box {
+    width: 90%;
+    max-width: 500px;
+    padding: 40px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #FFFFFF;
+    text-align: center;
+    transition: 0.25s;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 23, 31, 0.3);
+} 
+
+.box input[type="text"],
+.box input[type="password"] {
+    border: 0;
+    background: none;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid #007EA7;
+    padding: 10px 10px;
+    width: 250px;
+    outline: none;
+    color: #00171F;
+    border-radius: 24px;
+    transition: 0.25s
+}
+
+.box h1 {
+    color: #00171F;
+    text-transform: uppercase;
+    font-weight: 500
+}
+
+.box input[type="text"]:focus,
+.box input[type="password"]:focus {
+    width: 300px;
+    border-color: #00A8E8;
+    background-color: #f0f8ff;
+}
+
+.box input[type="submit"] {
+    border: 0;
+    background: linear-gradient(135deg, #007EA7, #00A8E8);
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid #007EA7;
+    padding: 14px 40px;
+    outline: none;
+    color: #FFFFFF;
+    border-radius: 24px;
+    transition: 0.25s;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.box input[type="submit"]:hover {
+    background: linear-gradient(135deg, #00A8E8, #007EA7);
+    color: white;
+    transform: scale(1.05);
+}
+
+.text-muted {
+    color: #003459;
+}
+
+    </style>
+  </head>
+  <body>
+    <form class="box" method="post">
+        {% csrf_token %}
+        <h1>Admin Login</h1>
+        <p class="text-muted">Please enter your login and password!</p>
+
+        {% render_field form.username class="form-control" placeholder="Username" %}
+        {% for error in form.username.errors %}
+          <p style="color:red">{{error}}</p>
+        {% endfor %}
+
+        {% render_field form.password class="form-control" placeholder="Password" %}
+        {% for error in form.password.errors %}
+          <p style="color:red">{{error}}</p>
+        {% endfor %}
+
+        <input type="submit" value="Login">
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger" style="margin-top: 20px;">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </form>
+  </body>
+</html>

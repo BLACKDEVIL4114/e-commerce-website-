@@ -1,0 +1,58 @@
+{% extends 'ecom/customer_base.html' %}
+{% load static %}
+{% block content %}
+<br>
+<h3 style="text-align:center; color:#2F4550;"><strong>My Wishlist</strong></h3><br>
+<div class="container">
+{% if wishlist_items %}
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for item in wishlist_items %}
+      <tr>
+        <td>
+          {% if item.product.product_image %}
+            <img src="{{ item.product.product_image.url }}" height="50px" width="50px">
+          {% else %}
+            <img src="{% static 'images/success.png' %}" height="50px" width="50px">
+          {% endif %}
+        </td>
+        <td><a href="{% url 'product-detail' item.product.id %}" style="color:#2F4550; font-weight:600;">{{ item.product.name }}</a></td>
+        <td>&#8377; {{ item.product.price }}</td>
+        <td>
+          {% if item.product.stock > 5 %}
+            <span class="label label-success">In Stock</span>
+          {% elif item.product.stock > 0 %}
+            <span class="label label-warning">Only {{ item.product.stock }} left</span>
+          {% else %}
+            <span class="label label-danger">Out of Stock</span>
+          {% endif %}
+        </td>
+        <td>
+          <a href="{% url 'add-to-cart' item.product.id %}" class="btn btn-primary btn-xs">Add to Cart</a>
+          &nbsp;
+          <a href="{% url 'remove-from-wishlist' item.product.id %}" class="btn btn-danger btn-xs">Remove</a>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class="text-center" style="padding:60px 20px; background:#fff; border-radius:10px; border:1px solid #e1e8ed;">
+    <span class="glyphicon glyphicon-heart" style="font-size:60px; color:#ddd;"></span>
+    <h3 style="color:#2F4550; margin-top:20px;">Your wishlist is empty</h3>
+    <p style="color:#586F7C;">Save items you love to buy them later.</p>
+    <a href="/customer-home" class="btn btn-primary" style="background:#2F4550; border-color:#2F4550; border-radius:25px; padding:10px 30px;">Browse Products</a>
+  </div>
+{% endif %}
+</div>
+<br><br>
+{% endblock content %}

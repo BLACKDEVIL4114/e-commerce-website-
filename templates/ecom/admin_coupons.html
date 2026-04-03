@@ -1,0 +1,181 @@
+{% extends 'ecom/admin_base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+  .coupon-page { padding: 80px 0 40px 0; }
+  .coupon-header {
+    background: linear-gradient(135deg, #2F4550 0%, #586F7C 100%);
+    border-radius: 10px;
+    padding: 22px 28px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .coupon-header h4 { margin: 0; color: #fff; font-weight: 700; font-size: 18px; }
+  .coupon-header p  { margin: 4px 0 0; color: #b0bec5; font-size: 13px; }
+
+  .coupon-table thead { background-color: #2F4550; }
+  .coupon-table thead th { color: #b0bec5 !important; font-weight: 600; border: none; vertical-align: middle; white-space: nowrap; }
+  .coupon-table tbody tr:hover { background-color: #f7f9fc; }
+  .coupon-table tbody td { vertical-align: middle; border-color: #eef0f3; }
+
+  .badge-discount { background-color: #27ae60; font-size: 13px; padding: 5px 10px; border-radius: 20px; }
+  .badge-usage    { background-color: #2F4550; font-size: 13px; padding: 5px 10px; border-radius: 20px; }
+  .code-text      { font-size: 15px; font-weight: 700; letter-spacing: 2px; color: #2F4550; font-family: monospace; }
+
+  .empty-state    { text-align: center; padding: 60px 20px; color: #aaa; }
+  .empty-state .glyphicon { font-size: 48px; display: block; margin-bottom: 14px; color: #d0d7dd; }
+</style>
+
+<div class="container coupon-page">
+
+  <!-- Page Header -->
+  <div class="coupon-header">
+    <div>
+      <h4><span class="glyphicon glyphicon-tag" style="margin-right:10px;"></span>Coupon Management</h4>
+      <p>Create, track usage, enable/disable or delete coupons</p>
+    </div>
+    <a href="{% url 'admin-add-coupon' %}" class="btn btn-success">
+      <span class="glyphicon glyphicon-plus" style="margin-right:6px;"></span> Add Coupon
+    </a>
+  </div>
+
+  <!-- Stats Summary Row -->
+  <div class="row" style="margin-bottom:20px;">
+    <div class="col-sm-4">
+      <div class="panel panel-default" style="border-radius:8px; text-align:center; padding:14px 10px; margin:0;">
+        <div style="font-size:28px; font-weight:700; color:#2F4550;">{{ coupons|length }}</div>
+        <div style="font-size:12px; color:#888; margin-top:2px;">Total Coupons</div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="panel panel-default" style="border-radius:8px; text-align:center; padding:14px 10px; margin:0;">
+        <div style="font-size:28px; font-weight:700; color:#27ae60;">
+          {% with active_count=0 %}
+            {% for c in coupons %}{% if c.active %}{{ forloop.counter|add:"0" }}{% endif %}{% endfor %}
+          {% endwith %}
+          {{ coupons|dictsort:"active"|length }}
+        </div>
+        <div style="font-size:12px; color:#888; margin-top:2px;">Active</div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="panel panel-default" style="border-radius:8px; text-align:center; padding:14px 10px; margin:0;">
+        <div style="font-size:28px; font-weight:700; color:#e67e22;" id="total-uses">—</div>
+        <div style="font-size:12px; color:#888; margin-top:2px;">Total Uses</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coupons Table -->
+  <div class="panel panel-default" style="border-radius:10px; box-shadow:0 2px 12px rgba(0,0,0,0.08); overflow:hidden;">
+    <div class="table-responsive">
+      <table class="table coupon-table" style="margin-bottom:0;">
+        <thead>
+          <tr>
+            <th style="padding-left:20px;">#</th>
+            <th>Coupon Code</th>
+            <th>Discount</th>
+            <th>Times Used</th>
+            <th>Expiry</th>
+            <th>Status</th>
+            <th>Toggle</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for coupon in coupons %}
+          <tr class="coupon-row" data-usage="{{ coupon.usage_count }}">
+            <td style="padding-left:20px; color:#999;">{{ forloop.counter }}</td>
+
+            <td>
+              <span class="code-text">{{ coupon.code }}</span>
+            </td>
+
+            <td>
+              <span class="badge badge-discount">{{ coupon.discount_percent }}% OFF</span>
+            </td>
+
+            <td>
+              <span class="badge badge-usage">
+                <span class="glyphicon glyphicon-repeat" style="margin-right:5px;"></span>
+                {{ coupon.usage_count }}
+              </span>
+            </td>
+
+            <td style="color:#555; font-size:13px;">
+              {% if coupon.expiry %}
+                <span class="glyphicon glyphicon-calendar" style="margin-right:5px; color:#888;"></span>{{ coupon.expiry }}
+              {% else %}
+                <span class="text-muted">No expiry</span>
+              {% endif %}
+            </td>
+
+            <td>
+              {% if coupon.active %}
+                <span class="label label-success" style="font-size:12px; padding:5px 10px;">
+                  <span class="glyphicon glyphicon-ok" style="margin-right:4px;"></span>Active
+                </span>
+              {% else %}
+                <span class="label label-default" style="font-size:12px; padding:5px 10px;">
+                  <span class="glyphicon glyphicon-remove" style="margin-right:4px;"></span>Inactive
+                </span>
+              {% endif %}
+            </td>
+
+            <td>
+              <a href="{% url 'admin-toggle-coupon' coupon.id %}"
+                 class="btn btn-xs {% if coupon.active %}btn-warning{% else %}btn-success{% endif %}"
+                 style="min-width:80px;"
+                 onclick="return confirm('{% if coupon.active %}Disable{% else %}Enable{% endif %} coupon &quot;{{ coupon.code }}&quot;?')">
+                {% if coupon.active %}
+                  <span class="glyphicon glyphicon-ban-circle"></span> Disable
+                {% else %}
+                  <span class="glyphicon glyphicon-ok-circle"></span> Enable
+                {% endif %}
+              </a>
+            </td>
+
+            <td>
+              <a href="{% url 'admin-delete-coupon' coupon.id %}"
+                 class="btn btn-danger btn-xs"
+                 onclick="return confirm('Delete coupon &quot;{{ coupon.code }}&quot;? This cannot be undone.')">
+                <span class="glyphicon glyphicon-trash"></span> Delete
+              </a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="8">
+              <div class="empty-state">
+                <span class="glyphicon glyphicon-tag"></span>
+                <h5 style="color:#bbb; margin:0 0 12px;">No coupons yet</h5>
+                <a href="{% url 'admin-add-coupon' %}" class="btn btn-success">
+                  <span class="glyphicon glyphicon-plus" style="margin-right:6px;"></span> Create your first coupon
+                </a>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Compute total usage count from row data and display it
+  document.addEventListener('DOMContentLoaded', function () {
+    var rows = document.querySelectorAll('.coupon-row');
+    var total = 0;
+    rows.forEach(function (r) { total += parseInt(r.dataset.usage || 0); });
+    document.getElementById('total-uses').textContent = total;
+  });
+</script>
+
+{% endblock content %}

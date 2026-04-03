@@ -1,0 +1,235 @@
+/* ============================================
+   ECOMMERCE PROJECT COLOR PALETTE
+   ============================================ */
+
+   :root {
+
+  /* ===== BASE COLORS ===== */
+  --color-light-bg: #F5FBE6;
+  --color-teal: #215E61;
+  --color-dark-blue: #233D4D;
+  --color-orange: #FE7F2D;
+  --color-white: #ffffff;
+
+  /* ===== USAGE MAP ===== */
+  --body-bg: var(--color-light-bg);
+
+  --navbar-bg: var(--color-dark-blue);
+  --navbar-text: var(--color-white);
+
+  --button-primary: var(--color-orange);
+  --button-secondary: var(--color-teal);
+  --button-hover: #e96f1f; /* slightly darker orange */
+
+  --card-bg: var(--color-white);
+  --card-hover-overlay: var(--color-teal);
+
+  --text-primary: var(--color-dark-blue);
+  --text-secondary: var(--color-teal);
+
+  --border-color: var(--color-teal);
+
+  --footer-bg: var(--color-dark-blue);
+  --footer-text: var(--color-white);
+
+  --status-active: var(--color-orange);
+}
+
+body {
+  background-color: var(--body-bg);
+  color: var(--text-primary);
+  font-family: system-ui, Arial, sans-serif;
+}
+
+#navbar, .navbar {
+  background-color: var(--navbar-bg);
+  color: var(--navbar-text);
+}
+
+button {
+  background-color: var(--button-primary); /* Orange */
+  color: #ffffff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--button-hover);
+}
+
+.btn-secondary {
+  background-color: var(--button-secondary); /* Teal */
+}
+
+.el-wrapper {
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  transition: 0.3s ease;
+}
+
+.el-wrapper:hover {
+  box-shadow: 0 8px 16px rgba(35, 61, 77, 0.25);
+  transform: translateY(-4px);
+}
+
+footer {
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
+}
+
+/* ============================================
+   COLOR PALETTE GUIDE
+   ============================================ */
+
+/*
+  PRIMARY DARK COLOR (#000000)
+  - Reserve for special emphasis
+  - High contrast situations
+  
+  DARK NAVY (#2F4550)
+  - Navigation bars
+  - Primary buttons
+  - Footer background
+  - Active status indicators
+  - Form headers
+  
+  STEEL BLUE (#586F7C)
+  - Secondary buttons
+  - Hover effects
+  - Search button
+  - Card overlays
+  - Accents
+  
+  LIGHT TEAL (#B8DBD9)
+  - Borders
+  - Light accents
+  - Background variations
+  - Hover highlights (future use)
+  
+  OFF-WHITE (#F4F4F9)
+  - Page backgrounds
+  - Card backgrounds
+  - Text surfaces
+  - Clean white spaces
+*/
+
+/* ============================================
+   APPLIED UPDATES IN PROJECT
+   ============================================ */
+
+/* Navigation & Header */
+body {
+  background-color: var(--body-bg);
+  color: var(--text-primary);
+}
+
+#navbar {
+  background-color: var(--navbar-bg);
+  color: var(--navbar-text);
+}
+
+.navbar-button {
+  background-color: var(--button-secondary);
+  color: var(--navbar-text);
+}
+
+.cart-button {
+  background-color: var(--button-secondary);  /* Steel blue cart button */
+  color: var(--navbar-text);             /* Off-white text */
+}
+
+/* Footer */
+footer {
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
+}
+
+/* Forms */
+.note {
+  background: linear-gradient(to right, var(--navbar-bg), var(--button-secondary));  /* Gradient header */
+  color: var(--navbar-text);
+}
+
+.btnSubmit {
+  background: var(--button-primary);  /* Dark navy submit button */
+  color: var(--navbar-text);
+}
+
+/* Product Cards */
+.el-wrapper {
+  background-color: var(--card-bg);
+}
+
+.h-bg {
+  background-color: var(--card-hover-overlay);  /* Steel blue overlay */
+}
+
+.h-bg .h-bg-inner {
+  background-color: var(--text-primary);  /* Dark navy inner */
+}
+
+/* Status & Indicators */
+.track .step.active .icon {
+  background: var(--status-active);  /* Dark navy active status */
+}
+
+.track .step.active:before {
+  background: var(--button-secondary);  /* Steel blue progress bar */
+}
+
+.button {
+  background-color: var(--button-primary);  /* Dark navy button */
+}
+
+/* ============================================
+   HOW TO USE THIS PALETTE
+   ============================================ */
+
+/* 1. Consistent Navbar */
+#navbar, .navbar {
+  background-color: var(--navbar-bg);
+  color: var(--navbar-text);
+}
+
+/* 2. Button Styling */
+.btn-primary {
+  background-color: var(--button-primary);
+}
+
+.btn-secondary {
+  background-color: var(--button-secondary);
+}
+
+/* 3. Card Hover Effects */
+.card:hover {
+  box-shadow: 0 4px 8px rgba(47, 69, 80, 0.2);  /* Subtle navy shadow */
+}
+
+/* 4. Status Indicators */
+.status.active {
+  background-color: var(--status-active);
+  color: var(--navbar-text);
+}
+
+.status.inactive {
+  background-color: var(--text-secondary);
+  color: var(--navbar-text);
+}
+
+/* ============================================
+   MAINTENANCE NOTES
+   ============================================ */
+
+/*
+  To update colors across the entire project:
+  1. Modify the CSS variables in :root
+  2. Replace inline colors in HTML with CSS variables
+  3. Use the provided hex codes consistently
+  4. Test across all pages (home, admin, customer)
+  
+  Current Implementation: Inline hex codes in HTML
+  Future Improvement: Migrate to CSS variables for easier maintenance
+*/
