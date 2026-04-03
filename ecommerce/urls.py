@@ -83,7 +83,7 @@ urlpatterns = [
     path('admin-sales-report', views.admin_sales_report_view, name='admin-sales-report'),
 
     # Bulk Update & Export CSV
-    path('admin-bulk-update-status', views.admin_bulk_update_status_view, name='admin-bulk-update-status'),
+    path('admin-bulk-update-status/', views.admin_bulk_update_status_view, name='admin-bulk-update-status'),
     path('export-orders-csv', views.export_orders_csv_view, name='export-orders-csv'),
 
     # Complaints

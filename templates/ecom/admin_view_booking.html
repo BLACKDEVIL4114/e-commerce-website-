@@ -25,25 +25,25 @@
 <!--
 -->
 <div class="container">
-  <!-- Bulk Update Toolbar -->
-  <form id="bulkForm" method="POST" action="{% url 'admin-bulk-update-status' %}" style="margin-bottom:10px;">
-    {% csrf_token %}
-    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-      <select name="new_status" class="form-control" style="width:200px;">
-        <option value="">-- Select New Status --</option>
-        <option value="Pending">Pending</option>
-        <option value="Order Confirmed">Order Confirmed</option>
-        <option value="Out for Delivery">Out for Delivery</option>
-        <option value="Delivered">Delivered</option>
-        <option value="Cancelled">Cancelled</option>
-      </select>
-      <button type="submit" class="btn btn-primary" onclick="return confirm('Update selected orders?')">
-        <span class="glyphicon glyphicon-ok"></span> Bulk Update
-      </button>
-      <a href="{% url 'export-orders-csv' %}" class="btn btn-success">
-        <span class="glyphicon glyphicon-download-alt"></span> Export CSV
-      </a>
-    </div>
+  <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px; flex-wrap: wrap;">
+    <!-- Filter Toolbar -->
+    <form method="GET" action="{% url 'admin-view-booking' %}" style="margin: 0;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <select name="status_filter" class="form-control" style="width:200px;" onchange="this.form.submit()">
+          <option value="">-- Filter by Status --</option>
+          <option value="Pending" {% if request.GET.status_filter == 'Pending' %}selected{% endif %}>Pending</option>
+          <option value="Order Confirmed" {% if request.GET.status_filter == 'Order Confirmed' %}selected{% endif %}>Order Confirmed</option>
+          <option value="Out for Delivery" {% if request.GET.status_filter == 'Out for Delivery' %}selected{% endif %}>Out for Delivery</option>
+          <option value="Delivered" {% if request.GET.status_filter == 'Delivered' %}selected{% endif %}>Delivered</option>
+        </select>
+      </div>
+    </form>
+
+    <!-- Export CSV Button -->
+    <a href="{% url 'export-orders-csv' %}" class="btn btn-success" style="margin-left: 10px;">
+      <span class="glyphicon glyphicon-download-alt"></span> Export CSV
+    </a>
+  </div>
   <div class="panel panel-primary">
     <div class="panel-heading">
       <h6 class="panel-title">Total Orders</h6>
@@ -51,12 +51,12 @@
     <table class="table table-hover" id="dev-table">
       <thead>
         <tr>
-          <th><input type="checkbox" id="select-all" onclick="document.querySelectorAll('.order-check').forEach(cb => cb.checked = this.checked)"> All</th>
           <th>Customer Name</th>
           <th>Customer Mobile</th>
           <th>Shipment Address</th>
           <th>Product Name</th>
           <th>Product Picture</th>
+          <th>Date & Time</th>
           <th>Status</th>
           <th style="color: #d9534f;">Cancel/Return Reason</th>
           <th>Update Status</th>
@@ -66,7 +66,6 @@
       <!-- p for product, c for customer-->
       {% for product,customer,order in data %}
       <tr>
-        <td><input type="checkbox" class="order-check" name="order_ids" value="{{ order.id }}"></td>
         {% for c in customer %}
         <td> {{c.get_name}}</td>
         <td>{{c.mobile}}</td>
@@ -82,6 +81,7 @@
             <img src="{% static 'images/success.png' %}" alt="No Image" height="40px" width="40px" />
           {% endif %}
         </td>
+        <td>{{ order.order_date|date:"M j, Y, H:i" }}</td>
         <td>
           {% if order.status == 'Pending' %}
             <span class="label label-info">{{order.status}}</span>
@@ -119,7 +119,6 @@
       {% endfor %}
     </table>
   </div>
-  </form>
 </div>
 <!--
 -->

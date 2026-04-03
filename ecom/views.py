@@ -150,10 +150,10 @@ def admin_dashboard_view(request):
     today = datetime.date.today()
     total_orders_today = models.Order.objects.filter(order_date=today).count()
     
-    # Calculate revenue today
+    # Calculate revenue today (only delivered orders)
     # Assuming total_amount field exists based on previous payment_success_view edit
     orders_today = models.Order.objects.filter(order_date=today)
-    total_revenue_today = sum(order.total_amount for order in orders_today if order.total_amount)
+    total_revenue_today = sum(order.total_amount for order in orders_today if order.total_amount and order.status == 'Delivered')
     
     # New customers registered today (assuming Customer model has a field for date or use user.date_joined)
     # Checking Customer model or related User model
@@ -272,7 +272,12 @@ def update_product_view(request,pk):
 @login_required(login_url='adminlogin')
 def admin_view_booking_view(request):
     # Filter only active orders (not cancelled or returned)
-    orders=models.Order.objects.all().exclude(status__in=['Cancelled', 'Cancellation Requested', 'Return Requested'])
+    orders=models.Order.objects.all().exclude(status__in=['Cancelled', 'Cancellation Requested', 'Return Requested']).order_by('-id')
+    
+    status_filter = request.GET.get('status_filter')
+    if status_filter:
+        orders = orders.filter(status=status_filter)
+
     ordered_products=[]
     ordered_bys=[]
     for order in orders:
@@ -293,7 +298,7 @@ def admin_view_booking_view(request):
 @login_required(login_url='adminlogin')
 def admin_cancelled_returned_view(request):
     # Filter only cancelled or returned orders
-    orders=models.Order.objects.all().filter(status__in=['Cancelled', 'Cancellation Requested', 'Return Requested'])
+    orders=models.Order.objects.all().filter(status__in=['Cancelled', 'Cancellation Requested', 'Return Requested']).order_by('-id')
     ordered_products=[]
     ordered_bys=[]
     for order in orders:
@@ -554,7 +559,7 @@ def payment_success_view(request):
 @user_passes_test(is_customer)
 def my_order_view(request):
     customer = models.Customer.objects.get(user_id=request.user.id)
-    orders = models.Order.objects.filter(customer=customer).order_by('-order_date')
+    orders = models.Order.objects.filter(customer=customer).order_by('-id')
     product_count_in_cart = _cart_item_count(request)
     return render(request, 'ecom/my_order.html', {
         'orders': orders,
@@ -593,8 +598,8 @@ def return_order_view(request, pk):
         messages.error(request, 'Order not found.')
         return redirect('my-order')
     
-    # Return functionality is only for delivered products
-    if order.status == 'Delivered':
+    # Return functionality is only for delivered products within 7 days
+    if order.can_be_returned:
         if request.method == 'POST':
             reason = request.POST.get('reason')
             order.return_reason = reason
@@ -604,7 +609,7 @@ def return_order_view(request, pk):
             return redirect('my-order')
         return render(request, 'ecom/return_order_reason.html', {'order': order})
     
-    messages.error(request, 'Returns are only allowed for delivered orders.')
+    messages.error(request, 'Returns are only allowed within 7 days of delivery.')
     return redirect('my-order')
 
 
@@ -887,7 +892,7 @@ def admin_sales_report_view(request):
         orders = orders.filter(order_date__gte=from_date)
     if to_date:
         orders = orders.filter(order_date__lte=to_date)
-    total_revenue = sum(o.total_amount for o in orders if o.total_amount)
+    total_revenue = sum(o.total_amount for o in orders if o.total_amount and o.status == 'Delivered')
     total_orders = orders.count()
     return render(request, 'ecom/admin_sales_report.html', {
         'orders': orders,
@@ -909,6 +914,9 @@ def admin_bulk_update_status_view(request):
         valid_statuses = [s[0] for s in models.Order.STATUS]
         if new_status in valid_statuses and order_ids:
             models.Order.objects.filter(id__in=order_ids).update(status=new_status)
+            if new_status == 'Delivered':
+                from django.utils import timezone
+                models.Order.objects.filter(id__in=order_ids, delivered_date__isnull=True).update(delivered_date=timezone.now())
             messages.success(request, str(len(order_ids)) + ' order(s) updated to "' + new_status + '".')
         else:
             messages.error(request, 'Please select at least one order and a valid status.')
@@ -980,7 +988,8 @@ def my_complaints_view(request):
 @login_required(login_url='adminlogin')
 def admin_view_complaints_view(request):
     complaints = models.Complaint.objects.all().select_related('customer', 'product').order_by('-created_on')
-    return render(request, 'ecom/admin_complaints.html', {'complaints': complaints})
+    feedbacks = models.Feedback.objects.all().order_by('-id')
+    return render(request, 'ecom/admin_complaints.html', {'complaints': complaints, 'feedbacks': feedbacks})
 
 
 @login_required(login_url='adminlogin')

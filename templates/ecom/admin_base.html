@@ -99,8 +99,7 @@
           <a href="/admin-products" class="nav-item nav-link">Products</a>
           <a href="/admin-coupons" class="nav-item nav-link">Coupons</a>
           <a href="/admin-sales-report" class="nav-item nav-link">Sales</a>
-          <a href="/view-feedback" class="nav-item nav-link">Feedback</a>
-          <a href="/admin-complaints" class="nav-item nav-link" style="color: #ffcccc;">Complaints</a>
+          <a href="/admin-complaints" class="nav-item nav-link" style="color: #ffcccc;">Feedback & Complaints</a>
         </div>
 
         <div class="navbar-nav navbar-right">
@@ -112,6 +111,18 @@
   </div>
 
   <!-- content start-->
+  <div class="container" style="margin-top: 80px;">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
   {% block content %}
 
   {% endblock content %}

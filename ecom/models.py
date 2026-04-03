@@ -58,9 +58,30 @@ class Order(models.Model):
     email = models.CharField(max_length=50,null=True)
     address = models.CharField(max_length=500,null=True)
     mobile = models.CharField(max_length=20,null=True)
-    order_date= models.DateField(auto_now_add=True,null=True)
+    order_date= models.DateTimeField(auto_now_add=True,null=True)
     status=models.CharField(max_length=50,null=True,choices=STATUS, default='Pending')
     total_amount = models.PositiveIntegerField(default=0)
+    delivered_date = models.DateTimeField(null=True, blank=True)
+
+    @property
+    def can_be_returned(self):
+        from django.utils import timezone
+        if self.status == 'Delivered':
+            if self.delivered_date:
+                # 7 days allowed
+                return (timezone.now() - self.delivered_date).days <= 7
+            else:
+                # Legacy safeguard (if delivered prior to adding this feature, grant 7 days from now hypothetically, or just allow it.
+                # Since we just added it, legacy delivered items can be returned, or we block them. Let's just allow them to be safe.)
+                return True
+        return False
+
+    def save(self, *args, **kwargs):
+        if self.status == 'Delivered' and not self.delivered_date:
+            from django.utils import timezone
+            self.delivered_date = timezone.now()
+        super().save(*args, **kwargs)
+
 
     def __str__(self):
         return f"Order #{self.id} by {self.customer}"

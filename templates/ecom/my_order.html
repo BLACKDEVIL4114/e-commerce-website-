@@ -278,6 +278,10 @@ p {
     {% for order in orders %}
     <article class="card" style="margin-bottom: 30px; border: 1px solid #e1e8ed; border-radius: 10px; overflow: hidden;">
         <div class="card-body" style="padding: 25px;">
+            <div style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: space-between;">
+                <span style="font-weight: 600; color: #586F7C;">Order ID: #{{ order.id }}</span>
+                <span style="font-weight: 600; color: #586F7C;">Ordered on: {{ order.order_date|date:"F j, Y, g:i a" }}</span>
+            </div>
             <div class="row">
                 <div class="col-md-8">
                     {% for item in order.items.all %}
@@ -321,10 +325,12 @@ p {
                                 <a href="{% url 'cancel-order' order.id %}" class="action-link cancel-link">
                                     <i class="fa fa-times"></i> Cancel Order
                                 </a>
-                            {% elif order.status == 'Delivered' %}
+                            {% elif order.can_be_returned %}
                                 <a href="{% url 'return-order' order.id %}" class="action-link return-link">
                                     <i class="fa fa-undo"></i> Return Order
                                 </a>
+                            {% elif order.status == 'Delivered' %}
+                                <span class="text-muted" style="font-size: 13px; font-weight: 600; margin-top: 10px; display: inline-block;">Return window closed</span>
                             {% endif %}
                         </div>
                     </div>

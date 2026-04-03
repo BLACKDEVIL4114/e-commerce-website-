@@ -86,6 +86,37 @@
   </div>
   {% endif %}
 
+  <!-- Feedback Section -->
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; margin-top:50px;">
+    <div>
+      <h4 style="margin:0; color:#2F4550; font-weight:700;">
+        <span class="glyphicon glyphicon-comment" style="margin-right:8px; color:#5cb85c;"></span>
+        Customer Feedback
+      </h4>
+      <small class="text-muted">Review feedback submitted by users</small>
+    </div>
+    <span class="badge" style="background-color:#2F4550; font-size:14px; padding:7px 14px;">
+      {{ feedbacks|length }} Total
+    </span>
+  </div>
+
+  {% if feedbacks %}
+    {% for f in feedbacks %}
+    <div class="panel panel-default" style="box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-radius:8px; border-left: 5px solid #5cb85c; margin-bottom: 15px;">
+      <div class="panel-body">
+        <button type="button" class="close" aria-label="Close" onclick="this.parentElement.parentElement.style.display='none';"><span aria-hidden="true">&times;</span></button>
+        <h5 style="margin-top: 0; color: #2F4550;"><strong>{{f.name}}</strong> <small style="float: right; margin-right: 15px;">{{f.date}}</small></h5>
+        <p style="margin-bottom: 0; color: #555;">{{f.feedback}}</p>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+  <div class="panel panel-default" style="text-align:center; padding:50px; border-radius:8px;">
+    <span class="glyphicon glyphicon-comment" style="font-size:50px; color:#ccc;"></span>
+    <h4 style="margin-top:15px; color:#aaa;">No feedback submitted yet.</h4>
+  </div>
+  {% endif %}
+
 </div>
 
 {% endblock content %}
